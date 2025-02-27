@@ -10,6 +10,9 @@ contract TokenFactory {
         string symbol;
         string description;
         string tokenImageUrl;
+        uint fundingRaised;
+        address tokenAddress;
+        address creatorAddress;
     }
 
     uint constant DECIMALS = 10 ** 18;
@@ -17,6 +20,8 @@ contract TokenFactory {
     uint constant INIT_SUPPLY = (20 * MAX_SUPPLY) / 100;
 
     uint constant MEMETOKEN_CREATION_FEE = 0.0001 ether;
+
+    uint constant MEMETOKEN_FUNDING_GOAL = 24 ether;
 
     mapping(address => memeToken) addressToMemeTokenMapping;
 
@@ -33,10 +38,33 @@ contract TokenFactory {
             name,
             symbol,
             description,
-            imageUrl
+            imageUrl,
+            0,
+            memeTokenAddress,
+            msg.sender
         );
         addressToMemeTokenMapping[memeTokenAddress] = newlyCreatedToken;
         console.log("Meme Token deployed successfully to", memeTokenAddress);
         return memeTokenAddress;
+    }
+
+    function buyMemeToken(
+        address memeTokenAddress,
+        uint purcharseQty
+    ) public payable returns (uint) {
+        require(
+            addressToMemeTokenMapping[memeTokenAddress].tokenAddress !=
+                address(0),
+            "Invalid meme token address"
+        );
+
+        memeToken storage listedToken = addressToMemeTokenMapping[
+            memeTokenAddress
+        ];
+        require(
+            addressToMemeTokenMapping[memeTokenAddress].fundingRaised <=
+                MEMETOKEN_FUNDING_GOAL,
+            "Funding goal has already been reached"
+        );
     }
 }
