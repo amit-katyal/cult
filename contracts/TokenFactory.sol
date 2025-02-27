@@ -16,6 +16,8 @@ contract TokenFactory {
     uint constant MAX_SUPPLY = 1000000 * DECIMALS;
     uint constant INIT_SUPPLY = (20 * MAX_SUPPLY) / 100;
 
+    uint constant MEMETOKEN_CREATION_FEE = 0.0001 ether;
+
     mapping(address => memeToken) addressToMemeTokenMapping;
 
     function createMemeToken(
@@ -23,7 +25,8 @@ contract TokenFactory {
         string memory symbol,
         string memory description,
         string memory imageUrl
-    ) public returns (address) {
+    ) public payable returns (address) {
+        require(msg.value == MEMETOKEN_CREATION_FEE, "Insufficient fee");
         Token memeTokenCt = new Token(name, symbol, INIT_SUPPLY);
         address memeTokenAddress = address(memeTokenCt);
         memeToken memory newlyCreatedToken = memeToken(
@@ -33,7 +36,7 @@ contract TokenFactory {
             imageUrl
         );
         addressToMemeTokenMapping[memeTokenAddress] = newlyCreatedToken;
-        console.log(memeTokenAddress);
+        console.log("Meme Token deployed successfully to", memeTokenAddress);
         return memeTokenAddress;
     }
 }
