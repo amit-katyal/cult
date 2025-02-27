@@ -23,6 +23,9 @@ contract TokenFactory {
 
     uint constant MEMETOKEN_FUNDING_GOAL = 24 ether;
 
+    uint256 public constant INITIAL_PRICE = 30000000000000; // Initial price of the token in wei (P0), 3.00 * 10^13
+    uint256 public constant K = 8 * 10 ** 15; // Growth rate(k), scaled to avoid precision loss
+
     mapping(address => memeToken) addressToMemeTokenMapping;
 
     function createMemeToken(
@@ -65,6 +68,23 @@ contract TokenFactory {
         // We use (P0 * 10^18) / k to avoid precision loss
         uint256 cost = (INITIAL_PRICE * 10 ** 18 * (exp1 - exp2)) / K; //Adjust for k scaling without divising by zero
         return cost;
+    }
+
+    // Improved helper function to calculate e^x for larger x using the Taylor series expansion
+    function exp(uint256 x) internal pure returns (uint256) {
+        uint256 sum = 10 ** 18; // Start with 1 * 10^18 to avoid precision loss
+        uint256 term = 10 ** 18; // Initial term is 1 * 10^18
+        uint256 xPower = x; // Initial power of x
+        for (uint256 i = 1; i < 20; i++) {
+            // Increase the number of iterations for more precision
+            term = (term * xPower) / (i * 10 ** 18); // x^i / i!
+            sum += term;
+
+            // Prevent overflow and unnecessary iterations
+            if (term < 1) break;
+        }
+
+        return sum;
     }
 
     function buyMemeToken(
