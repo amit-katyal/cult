@@ -48,6 +48,25 @@ contract TokenFactory {
         return memeTokenAddress;
     }
 
+    // Function to calculate the cost in wei for purchasing `tokensToBuy` starting from `currentSupply`
+    function calculateCost(
+        uint256 currentSupply,
+        uint256 tokensToBuy
+    ) public pure returns (uint256) {
+        // Calculate the exponent parts scalred to avoid precision loss
+        uint256 exponent1 = (K * (currentSupply + tokensToBuy)) / 10 ** 18;
+        uint256 exponent2 = (K * currentSupply) / 10 ** 18;
+
+        // Calcuate e^(kx) using the exp function
+        uint256 exp1 = exp(exponent1);
+        uint256 exp2 = exp(exponent2);
+
+        // Cost formula: (P0 / k) * (e^(k * (currentSupply + tokensToBuy)) - e^(k * currentSupply))
+        // We use (P0 * 10^18) / k to avoid precision loss
+        uint256 cost = (INITIAL_PRICE * 10 ** 18 * (exp1 - exp2)) / K; //Adjust for k scaling without divising by zero
+        return cost;
+    }
+
     function buyMemeToken(
         address memeTokenAddress,
         uint purcharseQty
@@ -66,5 +85,20 @@ contract TokenFactory {
                 MEMETOKEN_FUNDING_GOAL,
             "Funding goal has already been reached"
         );
+
+        Token tokenCt = Token(memeTokenAddress);
+
+        uint currentSupply = tokenCt.totalSupply();
+        uint availableSupply = MAX_SUPPLY - currentSupply;
+
+        uint availableSupplyScaled = availableSupply / DECIMALS;
+        uint purcharseQtyScaled = purcharseQty * DECIMALS;
+
+        require(
+            purcharseQtyScaled <= availableSupplyScaled,
+            "Insufficient supply"
+        );
+
+        // Calulate the cost for purchasing purchaseQtyScaled tokens
     }
 }
