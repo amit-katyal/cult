@@ -16,6 +16,8 @@ describe("Token Factory", function () {
         });
         const memeTokenAddress = await tokenFactoryct.memeTokenAddresses(0);
 
-        const tx2 = await tokenFactoryct.buyMemeToken(memeTokenAddress, 800000)
+        const tx2 = await tokenFactoryct.buyMemeToken(memeTokenAddress, 800000, {
+            value: hre.ethers.parseEther("24")
+        })
     });
 });

@@ -3,6 +3,9 @@ pragma solidity ^0.8.24;
 
 import "./Token.sol";
 import "hardhat/console.sol";
+import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
+import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol";
+import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
 
 contract TokenFactory {
     struct memeToken {
@@ -24,6 +27,11 @@ contract TokenFactory {
     uint constant MEMETOKEN_CREATION_FEE = 0.0001 ether;
 
     uint constant MEMETOKEN_FUNDING_GOAL = 24 ether;
+
+    address constant UNISWAP_V2_FACTORY_ADDRESS =
+        0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
+    address constant UNISWAP_V2_ROUTER_ADDRESS =
+        0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
 
     uint256 public constant INITIAL_PRICE = 30000000000000; // Initial price of the token in wei (P0), 3.00 * 10^13
     uint256 public constant K = 8 * 10 ** 15; // Growth rate(k), scaled to avoid precision loss
@@ -132,6 +140,74 @@ contract TokenFactory {
 
         tokenCt.mint(purchaseQtyScaled, msg.sender);
 
+        console.log("User's token balance: ", tokenCt.balanceOf(msg.sender));
+
+        if (listedToken.fundingRaised >= MEMETOKEN_FUNDING_GOAL) {
+            // Create the liquidity pool on Uniswap
+            address pool = _createLiquidityPool(memeTokenAddress);
+            console.log("Liquidity pool created at", pool);
+
+            // Provide liquidity to the pool
+            uint ethAmount = listedToken.fundingRaised;
+            uint liquidity = _provideLiquidity(
+                memeTokenAddress,
+                INIT_SUPPLY,
+                ethAmount
+            );
+            console.log("Liquidity provided to the pool", liquidity);
+
+            // Burn the LP tokens that represent the liquidity
+            _burnLPTokens(pool, liquidity);
+        }
+
         return requiredEth;
+    }
+
+    function _createLiquidityPool(
+        address memeTokenAddress
+    ) internal returns (address) {
+        // Create a Uniswap pair for the meme token and WETH
+        IUniswapV2Factory factory = IUniswapV2Factory(
+            UNISWAP_V2_FACTORY_ADDRESS
+        );
+        IUniswapV2Router01 router = IUniswapV2Router01(
+            UNISWAP_V2_ROUTER_ADDRESS
+        );
+        address pair = factory.createPair(memeTokenAddress, router.WETH());
+        return pair;
+    }
+
+    function _provideLiquidity(
+        address memeTokenAddress,
+        uint tokenAmount,
+        uint ethAmount
+    ) internal returns (uint) {
+        // Add liquidity to the pool
+        Token memeTokenCt = Token(memeTokenAddress);
+        memeTokenCt.approve(UNISWAP_V2_ROUTER_ADDRESS, tokenAmount);
+        IUniswapV2Router01 router = IUniswapV2Router01(
+            UNISWAP_V2_ROUTER_ADDRESS
+        );
+        (uint amountToken, uint amountETH, uint liquidity) = router
+            .addLiquidityETH{value: ethAmount}(
+            memeTokenAddress,
+            tokenAmount,
+            tokenAmount,
+            ethAmount,
+            address(this),
+            block.timestamp
+        );
+        return liquidity;
+    }
+
+    function _burnLPTokens(
+        address pool,
+        uint liquidity
+    ) internal returns (uint) {
+        // Burn the LP tokens that represent the liquidity
+        IUniswapV2Pair uniswapv2pairct = IUniswapV2Pair(pool);
+        uniswapv2pairct.transfer(address(0), liquidity);
+        console.log("LP tokens burned", liquidity);
+        return 1;
     }
 }
