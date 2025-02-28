@@ -15,6 +15,8 @@ contract TokenFactory {
         address creatorAddress;
     }
 
+    address[] public memeTokenAddresses;
+
     uint constant DECIMALS = 10 ** 18;
     uint constant MAX_SUPPLY = 1000000 * DECIMALS;
     uint constant INIT_SUPPLY = (20 * MAX_SUPPLY) / 100;
@@ -37,6 +39,7 @@ contract TokenFactory {
         require(msg.value == MEMETOKEN_CREATION_FEE, "Insufficient fee");
         Token memeTokenCt = new Token(name, symbol, INIT_SUPPLY);
         address memeTokenAddress = address(memeTokenCt);
+        memeTokenAddresses.push(memeTokenAddress);
         memeToken memory newlyCreatedToken = memeToken(
             name,
             symbol,
@@ -113,12 +116,15 @@ contract TokenFactory {
 
         uint availableSupplyScaled = availableSupply / DECIMALS;
         uint purcharseQtyScaled = purcharseQty * DECIMALS;
+        // console.log(purcharseQtyScaled)
 
-        require(
-            purcharseQtyScaled <= availableSupplyScaled,
-            "Insufficient supply"
-        );
+        require(purcharseQty <= availableSupplyScaled, "Insufficient supply");
 
         // Calulate the cost for purchasing purchaseQtyScaled tokens
+        uint currentSupplyScaled = (currentSupply - INIT_SUPPLY) / DECIMALS;
+        uint requiredEth = calculateCost(currentSupplyScaled, purcharseQty);
+
+        console.log("Required Eth: ", requiredEth);
+        return requiredEth;
     }
 }
