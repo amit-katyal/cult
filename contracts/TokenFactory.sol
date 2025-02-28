@@ -92,7 +92,7 @@ contract TokenFactory {
 
     function buyMemeToken(
         address memeTokenAddress,
-        uint purcharseQty
+        uint purchaseQty
     ) public payable returns (uint) {
         require(
             addressToMemeTokenMapping[memeTokenAddress].tokenAddress !=
@@ -115,16 +115,23 @@ contract TokenFactory {
         uint availableSupply = MAX_SUPPLY - currentSupply;
 
         uint availableSupplyScaled = availableSupply / DECIMALS;
-        uint purcharseQtyScaled = purcharseQty * DECIMALS;
-        // console.log(purcharseQtyScaled)
+        uint purchaseQtyScaled = purchaseQty * DECIMALS;
+        // console.log(purchaseQtyScaled)
 
-        require(purcharseQty <= availableSupplyScaled, "Insufficient supply");
+        require(purchaseQty <= availableSupplyScaled, "Insufficient supply");
 
         // Calulate the cost for purchasing purchaseQtyScaled tokens
         uint currentSupplyScaled = (currentSupply - INIT_SUPPLY) / DECIMALS;
-        uint requiredEth = calculateCost(currentSupplyScaled, purcharseQty);
+        uint requiredEth = calculateCost(currentSupplyScaled, purchaseQty);
 
         console.log("Required Eth: ", requiredEth);
+
+        require(msg.value >= requiredEth, "Insufficient funds");
+
+        listedToken.fundingRaised += msg.value;
+
+        tokenCt.mint(purchaseQtyScaled, msg.sender);
+
         return requiredEth;
     }
 }
