@@ -210,4 +210,14 @@ contract TokenFactory {
         console.log("LP tokens burned", liquidity);
         return 1;
     }
+
+    function getAllMemeTokens() public view returns (memeToken[] memory) {
+        memeToken[] memory allTokens = new memeToken[](
+            memeTokenAddresses.length
+        );
+        for (uint i = 0; i < memeTokenAddresses.length; i++) {
+            allTokens[i] = addressToMemeTokenMapping[memeTokenAddresses[i]];
+        }
+        return allTokens;
+    }
 }
