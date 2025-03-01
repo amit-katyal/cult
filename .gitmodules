@@ -1,0 +1,3 @@
+[submodule "cult-frontend"]
+	path = cult-frontend
+	url = git@github.com:amit-katyal/cult-frontend.git
