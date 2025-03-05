@@ -5,13 +5,13 @@ Explore the Cult, be the part of global decentralised culture!
 
 ## Overview
 
-Cult is a decentralized platform built on the Ethereum Virtual Machine (EVM) that allows celebrities to launch their own meme tokens. The platform leverages smart contracts to create, manage, and trade these tokens securely and transparently.
+Cult is a decentralized platform built on the Ethereum Virtual Machine (EVM) that allows celebrities to launch their own meme tokens. The platform leverages smart contracts to create, manage, and trade these tokens securely and transparently. This project is planned to be integrated into Monad blockchain which is EVM Compatible
 
 ## Features
 
 - **Token Creation**: Celebrities can create their own meme tokens with custom names, symbols, descriptions, and images.
-- **Token Purchase**: Users can purchase meme tokens using Ether (ETH).
-- **Liquidity Pools**: Automatically create and manage liquidity pools on Uniswap for meme tokens.
+- **Token Purchase**: Users can purchase meme tokens.
+- **Liquidity Pools**: Automatically create and manage liquidity pools on DEX for meme tokens.
 - **Funding Goals**: Each meme token has a funding goal that, once reached, triggers the creation of a liquidity pool.
 
 ## Smart Contracts
@@ -36,9 +36,9 @@ The project includes the following smart contracts:
     ```
 
 3. Set up environment variables:
-    Create a `.env` file in the root directory and add your Ethereum mainnet RPC URL:
+    Create a `.env` file in the root directory and add your RPC URL:
     ```sh
-    ETH_MAINNET_RPC_URL=<your_rpc_url>
+    RPC_URL=<your_rpc_url>
     ```
 
 ## Usage
