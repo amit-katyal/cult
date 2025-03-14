@@ -1,18 +1,19 @@
-# Cult
-The Celeb Token launchpad built on EVM, establishing a Web3 connection between the celebs and the fans, leveraging EVM infrastructure. 
+# The Cult
 
-Explore the Cult, be the part of global decentralised culture!
+The Cult is a tokenized creator economy platform built on the high-performance Monad blockchain. It positions itself as the “ultimate playground” for communities (aptly termed cults) to launch and trade social tokens with real purpose beyond fleeting memes. By fusing community, culture, and memes, The Cult enables creators and their fan communities to monetize and engage in new ways. Its core value proposition lies in leveraging Monad’s speed and scalability to provide a seamless, low-cost tokenization experience while differentiating itself with built-in verification and fair launch mechanisms that foster trust and transparency.
+
+Explore The Cult, be part of the global decentralized culture!
 
 ## Overview
 
-Cult is a decentralized platform built on the Ethereum Virtual Machine (EVM) that allows celebrities to launch their own meme tokens. The platform leverages smart contracts to create, manage, and trade these tokens securely and transparently. This project is planned to be integrated into Monad blockchain which is EVM Compatible
+The Cult is a decentralized platform built on the Monad blockchain that allows Creators to launch their own social tokens. The platform leverages smart contracts to create, manage, and trade these tokens securely and transparently.
 
 ## Features
 
-- **Token Creation**: Celebrities can create their own meme tokens with custom names, symbols, descriptions, and images.
-- **Token Purchase**: Users can purchase meme tokens.
-- **Liquidity Pools**: Automatically create and manage liquidity pools on DEX for meme tokens.
-- **Funding Goals**: Each meme token has a funding goal that, once reached, triggers the creation of a liquidity pool.
+- **Token Creation**: Communities can create their own social tokens with custom names, symbols, descriptions, and images.
+- **Token Purchase**: Users can purchase social tokens.
+- **Liquidity Pools**: Automatically create and manage liquidity pools on DEX for social tokens.
+- **Funding Goals**: Each social token has a funding goal that, once reached, triggers the creation of a liquidity pool.
 
 ## Smart Contracts
 
@@ -20,7 +21,7 @@ The project includes the following smart contracts:
 
 - **Lock.sol**: A contract that locks funds until a specified unlock time.
 - **Token.sol**: An ERC20 token contract with minting functionality.
-- **TokenFactory.sol**: A factory contract for creating and managing meme tokens.
+- **TokenFactory.sol**: A factory contract for creating and managing social tokens.
 
 ## Installation
 
@@ -65,3 +66,8 @@ npx hardhat test
 ## Contributing
 
 We welcome contributions! Please fork the repository and submit pull requests.
+
+## Frontend
+
+To check out the frontend UI, visit the `cult-frontend` submodule in the repository.
+
